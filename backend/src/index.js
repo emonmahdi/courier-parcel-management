@@ -1,8 +1,9 @@
-import express from "express";
-import mongoose from "mongoose"
-import dotenv from dotenv
-import cors from cors
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const cors = require("cors");
 
+// Load environment variables
 dotenv.config();
 
 const app = express();
@@ -12,19 +13,25 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// MongoDB Connection URI
+const mongoURI = process.env.MONGODB_URI;
 
-// test route
-app.get('/', (req, res) => {
-    req.send('Courier Parcel Management Backend Running!')
-});
-
-
-// Connect to DB and Start Server
-mongoose.connect(process.env.MONGODB_URI)
+// Connect to MongoDB
+mongoose
+  .connect(mongoURI)
   .then(() => {
-    console.log("MongoDB Connected");
+    console.log("MongoDB Connected Successfully!");
+    // Start the Express server after successful database connection
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
   })
-  .catch(err => console.error("DB Connection Error:", err));
+  .catch((err) => {
+    console.error("MongoDB Connection Error:", err);
+    process.exit(1); // Exit the process if connection fails
+  });
+
+// test route
+app.get("/", (req, res) => {
+  res.send("Courier Parcel Management Backend Running!");
+});
