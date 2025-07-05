@@ -1,8 +1,8 @@
-const { User } = require("../user/user.model");
+const User = require("../user/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = process.env.JWT_SECRET
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const registerUser = async ({ name, email, password, role }) => {
   const existing = await User.findOne({ email });
@@ -24,24 +24,22 @@ const registerUser = async ({ name, email, password, role }) => {
   };
 };
 
+const loginUser = async ({ email, password }) => {
+  const user = await User.findOne({ email });
+  if (!user) throw new Error("User not found!");
 
-const loginUser = async({email, password}) => {
-    const user = await User.findOne({email})
-    if(!user) throw new Error('User not found!');
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) throw new Error("Invalid Credentials");
 
-    const isMatch = await bcrypt.compare(password, user.password)
-    if(!isMatch) throw new Error('Invalid Credentials');
+  const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
+    expiresIn: "1d",
+  });
 
-    const token = jwt.sign({id: user._id, role: user.role}, JWT_SECRET, {expiresIn:'1d'} );
+  return {
+    token,
+    user: { id: user._id, name: user.name, role: user.role },
+  };
+};
 
-    return {
-        token,
-        user: {id: user._id, name: user.name, role:user.role}
-    }
- 
-}
-
-export const AuthService ={
-    registerUser,
-    loginUser
-}
+const AuthService = { registerUser, loginUser };
+module.exports = { AuthService };
