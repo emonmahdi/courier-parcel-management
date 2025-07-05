@@ -7,6 +7,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const { AuthRoutes } = require("./modules/auth/auth.routes");
 const { UserRoutes } = require("./modules/user/user.routes");
+const { ParcelRoutes } = require("./modules/parcel/parcel.route");
 // const { AuthRoutes } = require("./modules/auth/auth.routes");
 
 // Load environment variables
@@ -22,6 +23,7 @@ app.use(express.json());
 // call the route
 app.use("/api/auth", AuthRoutes);
 app.use("/api/user", UserRoutes);
+app.use("/api/parcels", ParcelRoutes);
 
 // MongoDB Connection URI
 const mongoURI = process.env.MONGODB_URI;
