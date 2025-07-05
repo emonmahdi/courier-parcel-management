@@ -1,12 +1,16 @@
+// ✅ Must be first
+require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const { AuthRoutes } = require("./modules/auth/auth.routes");
+const { UserRoutes } = require("./modules/user/user.routes");
 // const { AuthRoutes } = require("./modules/auth/auth.routes");
 
 // Load environment variables
-dotenv.config();
+// dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,7 +21,7 @@ app.use(express.json());
 
 // call the route
 app.use("/api/auth", AuthRoutes);
-
+app.use("/api/user", UserRoutes);
 
 // MongoDB Connection URI
 const mongoURI = process.env.MONGODB_URI;

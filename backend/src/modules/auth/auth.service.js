@@ -35,7 +35,7 @@ const loginUser = async ({ email, password }) => {
     { id: user._id, role: user.role },
     JWT_SECRET || "default_secret",
     {
-      expiresIn: "1d",
+      expiresIn: "7d",
     }
   );
 
