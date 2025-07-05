@@ -20,7 +20,7 @@ const getAllParcels = async (req, res) => {
 
 const getMyParcels = async (req, res) => {
   try {
-    const parcels = await ParcelService.getMyParcels(req.user.id);
+    const parcels = await ParcelService.getMyParcels(req.user?.id);
     res.json(parcels);
   } catch (err) {
     res.status(500).json({ message: err.message });

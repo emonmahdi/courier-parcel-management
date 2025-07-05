@@ -6,10 +6,12 @@ const createParcel = async (data, userId) => {
 };
 
 const getAllParcels = async () => {
-  const data = Parcel.find().populate("customer").populate("deliveryAgent");
+  const data = await Parcel.find()
+    .populate("customer")
+    .populate("deliveryAgent");
   return data;
 };
-
+  
 const getMyParcels = async (userId) => {
   const data = Parcel.find({ customer: userId });
   return data;
