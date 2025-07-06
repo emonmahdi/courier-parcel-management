@@ -9,15 +9,16 @@ const getAllParcels = async () => {
   const data = await Parcel.find()
     .populate("customer")
     .populate("deliveryAgent");
+  console.log(data);
   return data;
 };
-  
+
 const getMyParcels = async (userId) => {
-  const data = Parcel.find({ customer: userId });
+  const data = await Parcel.find({ customer: userId });
   return data;
 };
 const assignAgent = async (parcelId, agentId) => {
-  const data = Parcel.findByIdAndUpdate(
+  const data = await Parcel.findByIdAndUpdate(
     parcelId,
     { deliveryAgent: agentId },
     { new: true }

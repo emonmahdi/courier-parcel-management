@@ -4,6 +4,7 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const bodyParser = require("body-parser");
 const cors = require("cors");
 const { AuthRoutes } = require("./modules/auth/auth.routes");
 const { UserRoutes } = require("./modules/user/user.routes");
@@ -19,6 +20,8 @@ const PORT = process.env.PORT || 5000;
 // middleware
 app.use(cors());
 app.use(express.json());
+
+app.use(bodyParser.json());
 
 // call the route
 app.use("/api/auth", AuthRoutes);
