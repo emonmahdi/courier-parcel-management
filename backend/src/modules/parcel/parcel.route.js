@@ -22,6 +22,10 @@ router.put('/status/:id', verifyToken, restrictTo('admin', 'agent'), ParcelContr
 // Track parcel by ID
 router.get('/:id', verifyToken, ParcelController.getParcelById)
 
+// Update location (only delivery agents)
+router.put('/location/:id', verifyToken, restrictTo('agent'), ParcelController.updateLocation);
+
+
 const ParcelRoutes = router;
 
 module.exports = { ParcelRoutes };

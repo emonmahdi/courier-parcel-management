@@ -60,6 +60,20 @@ const getParcelById = async (req, res) => {
   }
 };
 
+//update location
+const updateLocation = async (req, res) => {
+  try {
+    const { lat, lng } = req.body;
+    const updatedParcel = await ParcelService.updateLocation(req.params.id, {
+      lat,
+      lng,
+    });
+    res.status(200).json(updatedParcel);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
 const ParcelController = {
   createParcel,
   getAllParcels,
@@ -67,6 +81,7 @@ const ParcelController = {
   assignAgent,
   updateStatus,
   getParcelById,
+  updateLocation,
 };
 
 module.exports = { ParcelController };

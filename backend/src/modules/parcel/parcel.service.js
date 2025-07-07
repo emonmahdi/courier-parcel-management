@@ -42,6 +42,17 @@ const getParcelById = async (parcelId) => {
   return singleParcel;
 };
 
+
+// update location
+const updateLocation = async(parcelId, location) => {
+  const updated = await Parcel.findByIdAndUpdate(
+    parcelId,
+    {currentLocation:location},
+    {new: true}
+  );
+  return updated;
+}
+
 const ParcelService = {
   createParcel,
   getAllParcels,
@@ -49,6 +60,7 @@ const ParcelService = {
   assignAgent,
   updateStatus,
   getParcelById,
+  updateLocation
 };
 
 module.exports = { ParcelService };
