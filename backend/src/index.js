@@ -9,6 +9,7 @@ const cors = require("cors");
 const { AuthRoutes } = require("./modules/auth/auth.routes");
 const { UserRoutes } = require("./modules/user/user.routes");
 const { ParcelRoutes } = require("./modules/parcel/parcel.route");
+const { DashboardRoutes } = require("./modules/dashboard/dashboard.route");
 // const { AuthRoutes } = require("./modules/auth/auth.routes");
 
 // Load environment variables
@@ -27,6 +28,7 @@ app.use(bodyParser.json());
 app.use("/api/auth", AuthRoutes);
 app.use("/api/user", UserRoutes);
 app.use("/api/parcels", ParcelRoutes);
+app.use("/api/dashboard", DashboardRoutes);
 
 // MongoDB Connection URI
 const mongoURI = process.env.MONGODB_URI;
