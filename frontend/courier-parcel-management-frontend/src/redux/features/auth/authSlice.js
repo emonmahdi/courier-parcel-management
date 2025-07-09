@@ -27,7 +27,7 @@ export const register = createAsyncThunk(
   }
 );
 
-export const logout = createAsyncThunk("/auth/login", async () => {
+export const logout = createAsyncThunk("/auth/logout", async () => {
   authService.logout();
 });
 
@@ -60,4 +60,5 @@ const authSlice = createSlice({
   },
 });
 
-export default authSlice.reducer;
+// ✅ Named export
+export const authReducer = authSlice.reducer;
