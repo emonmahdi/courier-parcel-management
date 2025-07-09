@@ -1,0 +1,202 @@
+Great! You're using `react-router-dom` v6+ with `createBrowserRouter`. Let's now **properly structure all routes** (Admin, Customer, Agent, Auth) for your **Courier & Parcel Management System** project, based on the requirements.
+
+---
+
+## ✅ Features to Route:
+
+* **Public**: Home, About, Login, Register
+* **Customer**: Book Parcel, Booking History, Track Parcel
+* **Admin**: Dashboard, Manage Parcels, Assign Agent
+* **Delivery Agent**: Assigned Parcels, Update Status
+* **Error Page**: 404 fallback
+
+---
+
+## 🗂 Suggested File/Folder Structure
+
+```
+src/
+├── routes/
+│   └── routes.jsx
+├── pages/
+│   ├── auth/            # Login, Register
+│   ├── admin/           # Dashboard, AssignAgent
+│   ├── customer/        # BookParcel, BookingHistory, TrackParcel
+│   ├── agent/           # AssignedParcels, StatusUpdate
+│   └── public/          # Home, About
+├── layout/
+│   └── MainLayout.jsx   # For shared header/footer
+├── App.jsx
+```
+
+---
+
+## ✨ Step-by-Step: `routes.jsx`
+
+```jsx
+// src/routes/routes.jsx
+import { createBrowserRouter } from "react-router-dom";
+import MainLayout from "../layout/MainLayout";
+import App from "../App";
+
+// Public
+import Home from "../pages/public/Home";
+import About from "../pages/public/About";
+
+// Auth
+import Login from "../pages/auth/Login";
+import Register from "../pages/auth/Register";
+
+// Customer
+import BookParcel from "../pages/customer/BookParcel";
+import BookingHistory from "../pages/customer/BookingHistory";
+import TrackParcel from "../pages/customer/TrackParcel";
+
+// Admin
+import AdminDashboard from "../pages/admin/Dashboard";
+import AssignAgent from "../pages/admin/AssignAgent";
+
+// Agent
+import AssignedParcels from "../pages/agent/AssignedParcels";
+import UpdateStatus from "../pages/agent/UpdateStatus";
+
+// Utils
+import ErrorPage from "../pages/ErrorPage";
+import PrivateRoute from "./PrivateRoute"; // Auth role-based wrapper
+
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <MainLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      { path: "", element: <Home /> },
+      { path: "about", element: <About /> },
+      { path: "login", element: <Login /> },
+      { path: "register", element: <Register /> },
+
+      // Customer routes
+      {
+        path: "customer",
+        element: <PrivateRoute role="customer" />,
+        children: [
+          { path: "book", element: <BookParcel /> },
+          { path: "history", element: <BookingHistory /> },
+          { path: "track/:id", element: <TrackParcel /> }
+        ]
+      },
+
+      // Admin routes
+      {
+        path: "admin",
+        element: <PrivateRoute role="admin" />,
+        children: [
+          { path: "dashboard", element: <AdminDashboard /> },
+          { path: "assign", element: <AssignAgent /> }
+        ]
+      },
+
+      // Agent routes
+      {
+        path: "agent",
+        element: <PrivateRoute role="agent" />,
+        children: [
+          { path: "parcels", element: <AssignedParcels /> },
+          { path: "update/:id", element: <UpdateStatus /> }
+        ]
+      }
+    ]
+  }
+]);
+```
+
+---
+
+## 🧱 Create Sample Components
+
+Create files with basic templates like:
+
+**📁 `pages/public/Home.jsx`**
+
+```jsx
+export default function Home() {
+  return <h1 className="text-xl">🏠 Welcome to Courier Management</h1>;
+}
+```
+
+**📁 `pages/admin/Dashboard.jsx`**
+
+```jsx
+export default function AdminDashboard() {
+  return <h2 className="text-xl font-bold">📊 Admin Dashboard</h2>;
+}
+```
+
+Do the same for each route component.
+
+---
+
+## 📁 `layout/MainLayout.jsx`
+
+```jsx
+import { Outlet, Link } from "react-router-dom";
+
+export default function MainLayout() {
+  return (
+    <div>
+      <header className="p-4 bg-blue-600 text-white flex justify-between">
+        <h1>Courier System</h1>
+        <nav>
+          <Link to="/" className="mr-4">Home</Link>
+          <Link to="/about">About</Link>
+        </nav>
+      </header>
+      <main className="p-4">
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+```
+
+---
+
+## ✅ `PrivateRoute.jsx` (Role-Based Auth Wrapper)
+
+```jsx
+import { Navigate, Outlet } from "react-router-dom";
+
+export default function PrivateRoute({ role }) {
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  if (!token || user.role !== role) return <Navigate to="/login" />;
+  return <Outlet />;
+}
+```
+
+---
+
+## 🧪 Usage
+
+In your `main.jsx` or `index.js`:
+
+```jsx
+import { RouterProvider } from "react-router-dom";
+import { router } from "./routes/routes";
+
+<RouterProvider router={router} />;
+```
+
+---
+
+## ✅ What’s Next?
+
+Would you like full **UI code for**:
+
+* Parcel Booking Form?
+* Admin Assign Agent interface?
+* Agent Status update with dropdown?
+* Google Map integration?
+
+Let me know — I’ll guide step by step.

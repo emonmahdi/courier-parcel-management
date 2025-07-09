@@ -1,0 +1,265 @@
+Absolutely! Since you've already completed the **backend for Auth + Parcel + Dashboard Metrics**, let's now move to the **frontend implementation** using **React.js** (you can also use Next.js later for SSR).
+
+---
+
+## 🔥 Goal: Frontend for Courier & Parcel System (MERN Stack)
+
+We'll implement:
+
+* Customer & Admin Web App
+* React with Router, Axios, TailwindCSS/Bootstrap
+* Protected Routes (based on roles)
+* Real-time updates (with Socket.IO later)
+* Google Maps (tracking & route optimization)
+
+---
+
+## ✅ Step-by-Step Frontend Plan
+
+### 🔧 Tech Stack:
+
+* React.js (Create React App or Vite)
+* React Router DOM (routing)
+* Axios (API calls)
+* Context API or Redux (auth/global state)
+* TailwindCSS (UI styling)
+* Socket.IO Client (for real-time)
+* Google Maps JavaScript API
+
+---
+
+## 🧱 Folder Structure
+
+```
+src/
+├── components/
+├── pages/
+│   ├── auth/
+│   ├── admin/
+│   ├── customer/
+├── routes/
+├── services/
+├── utils/
+├── App.js
+├── main.jsx
+```
+
+---
+
+## 🧭 Step-by-Step Guide
+
+---
+
+### ✅ 1. Setup React Project
+
+```bash
+npx create-react-app courier-frontend
+cd courier-frontend
+npm install axios react-router-dom
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+```
+
+### ✏️ In `tailwind.config.js`:
+
+```js
+content: ["./src/**/*.{js,jsx,ts,tsx}"],
+```
+
+### ✏️ In `index.css`:
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+---
+
+### ✅ 2. Setup Routing
+
+Install:
+
+```bash
+npm install react-router-dom
+```
+
+### ✏️ `App.js`
+
+```jsx
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import AdminDashboard from "./pages/admin/Dashboard";
+import CustomerHome from "./pages/customer/CustomerHome";
+import PrivateRoute from "./routes/PrivateRoute";
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        {/* Auth */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        {/* Admin Route */}
+        <Route element={<PrivateRoute role="admin" />}>
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        </Route>
+
+        {/* Customer Route */}
+        <Route element={<PrivateRoute role="customer" />}>
+          <Route path="/customer/home" element={<CustomerHome />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
+```
+
+---
+
+### ✅ 3. Auth Service (JWT)
+
+#### ✏️ `services/auth.js`
+
+```js
+import axios from "axios";
+
+const API = axios.create({ baseURL: "http://localhost:5000/api" });
+
+export const login = (data) => API.post("/auth/login", data);
+export const register = (data) => API.post("/auth/register", data);
+```
+
+---
+
+### ✅ 4. Login Page Example
+
+#### ✏️ `pages/auth/Login.jsx`
+
+```jsx
+import { useState } from "react";
+import { login } from "../../services/auth";
+import { useNavigate } from "react-router-dom";
+
+function Login() {
+  const [form, setForm] = useState({ email: "", password: "" });
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const res = await login(form);
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("user", JSON.stringify(res.data.user));
+    
+    if (res.data.user.role === "admin") {
+      navigate("/admin/dashboard");
+    } else {
+      navigate("/customer/home");
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 shadow">
+      <h2 className="text-xl font-bold mb-4">Login</h2>
+      <input type="email" placeholder="Email" className="input" value={form.email}
+        onChange={(e) => setForm({ ...form, email: e.target.value })} />
+      <input type="password" placeholder="Password" className="input mt-2" value={form.password}
+        onChange={(e) => setForm({ ...form, password: e.target.value })} />
+      <button type="submit" className="btn btn-primary mt-4">Login</button>
+    </form>
+  );
+}
+
+export default Login;
+```
+
+---
+
+### ✅ 5. Admin Dashboard Page
+
+#### ✏️ `pages/admin/Dashboard.jsx`
+
+```jsx
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+function AdminDashboard() {
+  const [metrics, setMetrics] = useState(null);
+
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("http://localhost:5000/api/dashboard/metrics", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setMetrics(res.data);
+    };
+    fetchMetrics();
+  }, []);
+
+  if (!metrics) return <p>Loading...</p>;
+
+  return (
+    <div className="p-4">
+      <h1 className="text-xl font-bold mb-4">📊 Admin Dashboard</h1>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="p-4 bg-green-100 rounded">Total Today: {metrics.totalParcelsToday}</div>
+        <div className="p-4 bg-blue-100 rounded">This Week: {metrics.totalParcelsThisWeek}</div>
+        <div className="p-4 bg-red-100 rounded">Failed: {metrics.failedDeliveries}</div>
+        <div className="p-4 bg-yellow-100 rounded">COD ₹: {metrics.totalCODAmountDelivered}</div>
+      </div>
+    </div>
+  );
+}
+
+export default AdminDashboard;
+```
+
+---
+
+### ✅ 6. PrivateRoute with Role Check
+
+#### ✏️ `routes/PrivateRoute.jsx`
+
+```jsx
+import { Navigate, Outlet } from "react-router-dom";
+
+const PrivateRoute = ({ role }) => {
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (!token || user.role !== role) {
+    return <Navigate to="/login" />;
+  }
+
+  return <Outlet />;
+};
+
+export default PrivateRoute;
+```
+
+---
+
+## 🧪 Test Your Frontend
+
+1. Start backend: `npm run dev`
+2. Start frontend: `npm start`
+3. Register or login as Admin
+4. See dashboard metrics
+
+---
+
+## 🎯 What Next?
+
+Would you like to continue with:
+
+1. ✅ **Customer Booking Parcel** form UI?
+2. ✅ **Parcel Status Update** by Agent?
+3. ✅ **Google Maps** location tracking for parcel?
+4. ✅ Real-time status with **Socket.IO**?
+
+Tell me which one to implement next — I’ll guide you with full code.
