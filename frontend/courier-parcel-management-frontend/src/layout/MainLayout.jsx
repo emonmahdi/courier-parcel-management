@@ -1,11 +1,28 @@
 // src/layout/MainLayout.jsx
 import { useState } from "react";
-import { Outlet, Link } from "react-router";
+import { Outlet, Link, useNavigate } from "react-router";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../redux/features/auth/authSlice"; // your logout action
 
 export default function MainLayout() {
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const toggleMenu = () => setIsOpen(!isOpen);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
+
+  const dashboardPath =
+    user?.role === "admin"
+      ? "/admin/dashboard"
+      : user?.role === "agent"
+      ? "/agent/parcels"
+      : "/customer/book";
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -42,19 +59,36 @@ export default function MainLayout() {
             </button>
           </div>
 
-          <nav className="hidden md:flex gap-6">
+          <nav className="hidden md:flex gap-6 items-center">
             <Link to="/" className="hover:underline">
               Home
             </Link>
             <Link to="/about" className="hover:underline">
               About
             </Link>
-            <Link to="/login" className="hover:underline">
-              Login
-            </Link>
-            <Link to="/register" className="hover:underline">
-              Register
-            </Link>
+
+            {!user ? (
+              <>
+                <Link to="/login" className="hover:underline">
+                  Login
+                </Link>
+                <Link to="/register" className="hover:underline">
+                  Register
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to={dashboardPath} className="hover:underline">
+                  Dashboard
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="hover:underline text-sm"
+                >
+                  Logout
+                </button>
+              </>
+            )}
           </nav>
         </div>
 
@@ -71,20 +105,44 @@ export default function MainLayout() {
             >
               About
             </Link>
-            <Link
-              to="/login"
-              onClick={toggleMenu}
-              className="block hover:underline"
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              onClick={toggleMenu}
-              className="block hover:underline"
-            >
-              Register
-            </Link>
+
+            {!user ? (
+              <>
+                <Link
+                  to="/login"
+                  onClick={toggleMenu}
+                  className="block hover:underline"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={toggleMenu}
+                  className="block hover:underline"
+                >
+                  Register
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  to={dashboardPath}
+                  onClick={toggleMenu}
+                  className="block hover:underline"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    toggleMenu();
+                  }}
+                  className="block hover:underline"
+                >
+                  Logout
+                </button>
+              </>
+            )}
           </div>
         )}
       </header>

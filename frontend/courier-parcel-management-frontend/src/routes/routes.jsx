@@ -27,9 +27,9 @@ import App from "../App";
 // import Register from "../pages/auth/Register";
 
 // Customer
-// import BookParcel from "../pages/customer/BookParcel";
-// import BookingHistory from "../pages/customer/BookingHistory";
-// import TrackParcel from "../pages/customer/TrackParcel";
+import BookParcel from "../pages/customer/BookParcel";
+import BookingHistory from "../pages/customer/BookingHistory";
+import TrackParcel from "../pages/customer/TrackParcel";
 
 // Admin
 // import AdminDashboard from "../pages/admin/Dashboard";
@@ -47,7 +47,8 @@ import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import ErrorPage from "../pages/ErrorPage";
 import MainLayout from "../layout/MainLayout";
-// import PrivateRoute from "./PrivateRoute"; // Auth role-based wrapper
+import PrivateRoute from "../middleware/PrivateRoute";
+// import PrivateRoute from "./PrivateRoute";
 
 export const router = createBrowserRouter([
   {
@@ -61,15 +62,15 @@ export const router = createBrowserRouter([
       { path: "register", element: <Register /> },
 
       // Customer routes
-      // {
-      //   path: "customer",
-      //   element: <PrivateRoute role="customer" />,
-      //   children: [
-      //     { path: "book", element: <BookParcel /> },
-      //     { path: "history", element: <BookingHistory /> },
-      //     { path: "track/:id", element: <TrackParcel /> }
-      //   ]
-      // },
+      {
+        path: "customer",
+        element: <PrivateRoute role="customer" />,
+        children: [
+          { path: "book", element: <BookParcel /> },
+          { path: "history", element: <BookingHistory /> },
+          { path: "track/:id", element: <TrackParcel /> },
+        ],
+      },
 
       // Admin routes
       // {
@@ -90,6 +91,6 @@ export const router = createBrowserRouter([
       //     { path: "update/:id", element: <UpdateStatus /> }
       //   ]
       // }
-    ]
-  }
+    ],
+  },
 ]);
