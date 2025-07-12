@@ -48,6 +48,13 @@ import Register from "../pages/auth/Register";
 import ErrorPage from "../pages/ErrorPage";
 import MainLayout from "../layout/MainLayout";
 import PrivateRoute from "../middleware/PrivateRoute";
+import AdminDashboard from "../pages/admin/AdminDashboard";
+import AssignAgent from "../pages/admin/AssignAgent";
+import ManageUsers from "../pages/admin/ManageUsers";
+import ManageBookings from "../pages/admin/ManageBookings";
+import Reports from "../pages/admin/Reports";
+import AdminLayout from "../layout/AdminLayout";
+import CustomerLayout from "../layout/CustomerLayout";
 // import PrivateRoute from "./PrivateRoute";
 
 export const router = createBrowserRouter([
@@ -64,7 +71,7 @@ export const router = createBrowserRouter([
       // Customer routes
       {
         path: "customer",
-        element: <PrivateRoute role="customer" />,
+        element: <PrivateRoute role="customer"><CustomerLayout /></PrivateRoute>,
         children: [
           { path: "book", element: <BookParcel /> },
           { path: "history", element: <BookingHistory /> },
@@ -73,14 +80,17 @@ export const router = createBrowserRouter([
       },
 
       // Admin routes
-      // {
-      //   path: "admin",
-      //   element: <PrivateRoute role="admin" />,
-      //   children: [
-      //     { path: "dashboard", element: <AdminDashboard /> },
-      //     { path: "assign", element: <AssignAgent /> }
-      //   ]
-      // },
+      {
+        path: "admin",
+         element: <PrivateRoute role="admin"><AdminLayout /></PrivateRoute>,
+        children: [
+          { path: "dashboard", element: <AdminDashboard /> },
+            { path: "assign", element: <AssignAgent /> },
+            { path: "users", element: <ManageUsers /> },
+            { path: "bookings", element: <ManageBookings /> },
+            { path: "reports", element: <Reports /> }
+        ]
+      },
 
       // Agent routes
       // {
