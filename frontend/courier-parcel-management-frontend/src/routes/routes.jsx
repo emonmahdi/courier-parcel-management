@@ -52,9 +52,12 @@ import AdminDashboard from "../pages/admin/AdminDashboard";
 import AssignAgent from "../pages/admin/AssignAgent";
 import ManageUsers from "../pages/admin/ManageUsers";
 import ManageBookings from "../pages/admin/ManageBookings";
-import Reports from "../pages/admin/Reports";
-import AdminLayout from "../layout/AdminLayout";
+import Reports from "../pages/admin/Reports"; 
 import CustomerLayout from "../layout/CustomerLayout";
+import AgentLayout from "../layout/AgentLayout";
+import AssignedParcels from "../pages/agent/AssignedParcels";
+import UpdateStatus from "../pages/agent/UpdateStatus";
+import AdminLayout from "../layout/AdminLayout";
 // import PrivateRoute from "./PrivateRoute";
 
 export const router = createBrowserRouter([
@@ -90,6 +93,15 @@ export const router = createBrowserRouter([
             { path: "bookings", element: <ManageBookings /> },
             { path: "reports", element: <Reports /> }
         ]
+      },
+
+      {
+          path: "agent",
+          element: <PrivateRoute role="agent"><AgentLayout /></PrivateRoute>,
+          children: [
+            { path: "parcels", element: <AssignedParcels /> },
+            { path: "update/:id", element: <UpdateStatus /> },
+          ],
       },
 
       // Agent routes
