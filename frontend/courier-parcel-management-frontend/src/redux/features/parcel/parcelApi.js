@@ -17,18 +17,18 @@ export const parcelApi = apiSlice.injectEndpoints({
     }),
 
     getAllParcels: builder.query({
-      query: () => "/parcel",
+      query: () => "/parcels",
       providesTags: ["Parcel"],
     }),
 
     getParcelById: builder.query({
-      query: (id) => `/parcel/${id}`,
+      query: (id) => `/parcels/${id}`,
       providesTags: (result, error, id) => [{ type: "Parcel", id }],
     }),
 
     assignAgent: builder.mutation({
       query: ({ id, agentId }) => ({
-        url: `/parcel/assign/${id}`,
+        url: `/parcels/assign/${id}`,
         method: "PUT",
         body: { agentId },
       }),
@@ -37,7 +37,7 @@ export const parcelApi = apiSlice.injectEndpoints({
 
     updateStatus: builder.mutation({
       query: ({ id, status }) => ({
-        url: `/parcel/status/${id}`,
+        url: `/parcels/status/${id}`,
         method: "PUT",
         body: { status },
       }),
@@ -46,7 +46,7 @@ export const parcelApi = apiSlice.injectEndpoints({
 
     updateLocation: builder.mutation({
       query: ({ id, lat, lng }) => ({
-        url: `/parcel/location/${id}`,
+        url: `/parcels/location/${id}`,
         method: "PUT",
         body: { lat, lng },
       }),

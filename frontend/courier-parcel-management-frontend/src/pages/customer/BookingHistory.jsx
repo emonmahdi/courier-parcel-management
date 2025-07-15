@@ -2,7 +2,10 @@
 import { useGetMyParcelsQuery } from "../../redux/features/parcel/parcelApi";
 
 const BookingHistory = () => {
-  const { data: parcels = [], isLoading, isError, error } = useGetMyParcelsQuery();
+  const { data: parcels = [], isLoading, isError, error } = useGetMyParcelsQuery(undefined, {
+    refetchOnMountOrArgChange:true,
+    refetchOnReconnect: true
+  });
 
   return (
     <div className="max-w-5xl mx-auto mt-10 bg-white p-6 rounded shadow">

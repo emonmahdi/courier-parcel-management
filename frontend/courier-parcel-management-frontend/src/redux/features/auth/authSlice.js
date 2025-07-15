@@ -1,6 +1,7 @@
 // src/redux/features/auth/authSlice.js
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { authService } from "./authService";
+import { apiSlice } from "../../api/apiSlice";
 
 // Get saved user and token from localStorage (if any)
 const storedAuth = JSON.parse(localStorage.getItem("auth"));
@@ -62,6 +63,9 @@ export const register = createAsyncThunk(
 export const logout = createAsyncThunk("/auth/logout", async () => {
   authService.logout(); // (optional: backend logout API call)
   localStorage.removeItem("auth");
+
+  // ✅ Reset all cached API data after logout
+  thunkAPI.dispatch(apiSlice.util.resetApiState());
 });
 
 // Slice
