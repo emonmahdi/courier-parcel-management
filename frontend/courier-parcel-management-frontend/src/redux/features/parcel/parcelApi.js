@@ -12,7 +12,7 @@ export const parcelApi = apiSlice.injectEndpoints({
     }),
 
     getMyParcels: builder.query({
-      query: () => "/parcel/my",
+      query: () => "/parcels/my",
       providesTags: ["Parcel"],
     }),
 
