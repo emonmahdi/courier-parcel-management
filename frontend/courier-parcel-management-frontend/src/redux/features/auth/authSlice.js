@@ -4,6 +4,7 @@ import { authService } from "./authService";
 
 // Get saved user and token from localStorage (if any)
 const storedAuth = JSON.parse(localStorage.getItem("auth"));
+console.log(storedAuth);
 
 const initialState = {
   user: storedAuth?.user || null,
@@ -73,6 +74,10 @@ const authSlice = createSlice({
       state.token = null;
       localStorage.removeItem("auth");
     },
+    setCredentials: (state, action) => {
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -116,5 +121,6 @@ const authSlice = createSlice({
 });
 
 // Export
-export const { logOut } = authSlice.actions;
+// export const { logOut } = authSlice.actions;
+export const { logOut, setCredentials } = authSlice.actions;
 export const authReducer = authSlice.reducer;
